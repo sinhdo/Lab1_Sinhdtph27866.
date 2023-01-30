@@ -1,26 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, ScrollView, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, Button, ScrollView, TextInput, FlatList,Image, SafeAreaView } from 'react-native';
+import { useState } from 'react';
 
 export default function App() {
   let count = 0;
   const [status, setStatus] = useState(false);
-  const [data, setData] = useState(null);
-  const [print, setPrint] = useState(false);
-  // const showData = (name, mt,img) => {
-  //   return 'Tên : ' +name+ ', Mô tả : '+ mt+' Link ảnh : '+img;
-  // }
-  function getData(val) {
-    setData(val.target.value)
-    setPrint(false)
-    console.warn(val.target.value)
-  }
+  const [name, setName] = useState(null);
+  const [mt, setMt] = useState(null);
+  const [img, setImg] = useState(null);
+
+  const [data, setData] = useState([]);
+  const getAll = () => {
+    setData([...data, { name, mt, img }]);
+    setName('');
+    setMt('');
+    setImg
+  };
+
   return (
 
     <View style={styles.container}>
-      <Text id='a' style={styles.text}>Tên : Đỗ Trường Sinh</Text>
-      <Text id='b' style={styles.text}>MSV: PH27866</Text>
-      
+      <Text style={styles.text}>Tên : Đỗ Trường Sinh</Text>
+      <Text style={styles.text}>MSV: PH27866</Text>
+
 
       <Button
         title={`${status ? 'Ẩn' : 'Thêm mới'}`}
@@ -31,9 +33,9 @@ export default function App() {
           ? <>
 
             {/* const prompt = require('prompt-sync')(); */}
-            <TextInput onChange={getData} id='name' style={styles.borders} placeholder='Nhập tên' />
-            <TextInput id='mt' style={styles.borders} placeholder='Mô tả' />
-            <TextInput id='img' style={styles.borders} placeholder='Link ảnh' />
+            <TextInput id='name' onChangeText={Text => setName(Text)} style={styles.borders} placeholder='Nhập tên' />
+            <TextInput id='mt' onChangeText={Text => setMt(Text)} style={styles.borders} placeholder='Mô tả' />
+            <TextInput id='img' onChangeText={Text => setImg(Text)} style={styles.borders} placeholder='Link ảnh' />
 
             <Button
               title={'Huỷ'}
@@ -42,19 +44,22 @@ export default function App() {
             />
             <Button title='Lưu'
               style={styles.right}
-              onPress={() => setPrint(true)}
+              onPress={getAll}
             />
+            <FlatList
+              data={data}
+              renderItem={({ item }) => (
+                <View>
+                  <Text>Tên :{item.name}</Text>
+                  <Text>Mô tả :{item.mt}</Text>
+                  <Text>Link :{item.img}</Text>
+                  
+                </View>
+              )}
+              KeyE={(item, index) => index.toString()}
+            >
 
-            {
-              print ?
-                <Text>{data}</Text>
-                : null
-            }
-
-
-
-
-
+            </FlatList>
           </>
           : null
       }
@@ -92,6 +97,7 @@ const styles = StyleSheet.create({
   btn: {
     width: 100,
     backgroundColor: "yellow"
-  }
+  },
+  productImage:{width:50,height:50}
 
 });
